@@ -269,7 +269,7 @@ export function buildSubjectContentFromSyllabus(
 
     const unitTopics: StoredUnitTopic[] = [];
 
-    let unitLabel = unit.unitLabel;
+    const unitLabel = unit.unitLabel;
 
 
 

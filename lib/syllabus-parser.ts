@@ -217,7 +217,7 @@ function parseUnitLine(line: string): ParsedUnitLine | null {
   if (!match) return null;
 
   const unitNum = match[1];
-  let rawRest = (match[2] ?? "").replace(/^:\s*/, "").trim();
+  const rawRest = (match[2] ?? "").replace(/^:\s*/, "").trim();
 
   if (!rawRest) {
     return {
@@ -241,7 +241,7 @@ function parseUnitLine(line: string): ParsedUnitLine | null {
     };
   }
 
-  let unitTitle = stripUnitMarkers(normalizeTitle(rawRest.slice(0, firstColon)));
+  const unitTitle = stripUnitMarkers(normalizeTitle(rawRest.slice(0, firstColon)));
   let body = stripUnitMarkers(rawRest.slice(firstColon + 1).trim());
 
   // Drop repeated unit title at the start of the body (common in UNIT-I style syllabi)

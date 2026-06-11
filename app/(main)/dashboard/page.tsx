@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { subDays } from "date-fns";
 import { getOrCreateUser } from "@/lib/auth";
-import { connectDB } from "@/lib/db";
 import { Subject } from "@/models/Subject";
 import { getAIRecommendations } from "@/lib/ai";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,8 +70,6 @@ function findTopicMeta(
 export default async function DashboardPage() {
   const user = await getOrCreateUser();
   if (!user) return null;
-
-  await connectDB();
 
   const [subjects, progressDoc] = await Promise.all([
     Subject.find({ userId: user.clerkId }).sort({ updatedAt: -1 }).lean(),

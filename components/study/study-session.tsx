@@ -132,6 +132,7 @@ export function StudySession({
   const [focusMode, setFocusMode] = useState(false);
   const [completing, setCompleting] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+  const tutorLoadedRef = useRef(false);
   const sessionStartedAt = useRef(new Date().toISOString());
 
   const subtopicProgress = hasSubtopicJourney
@@ -218,9 +219,16 @@ export function StudySession({
     }
   }, [topicName, aiContext, subjectSlug, topicId, unitTitle, parentTopicTitle]);
 
-  useEffect(() => {
-    loadTutor();
-  }, [loadTutor]);
+  const handleTabChange = useCallback(
+    (tab: string) => {
+      setActiveTab(tab);
+      if (tab === "tutor" && !tutorLoadedRef.current) {
+        tutorLoadedRef.current = true;
+        void loadTutor();
+      }
+    },
+    [loadTutor]
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -673,7 +681,7 @@ export function StudySession({
           <div className="grid xl:grid-cols-[1fr_300px] gap-5">
             {/* Main content with tabs */}
             <div className="min-w-0 space-y-4">
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <Tabs value={activeTab} onValueChange={handleTabChange}>
                 <TabsList className="w-full justify-start h-auto flex-wrap gap-1 bg-secondary/30 p-1">
                   <TabsTrigger value="overview" className="text-xs sm:text-sm">
                     Overview

@@ -53,7 +53,7 @@ export async function extractSyllabusContent(
 ): Promise<ExtractedSyllabusContent> {
   let workingText = text;
   let parsed = parseSyllabusWithFallback(workingText);
-  let quality = assessExtractionQuality(
+  const quality = assessExtractionQuality(
     parsed,
     workingText,
     options?.extractionMethod

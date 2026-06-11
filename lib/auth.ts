@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { connectDB } from "@/lib/db";
 import { User, IUser } from "@/models/User";
@@ -7,7 +8,8 @@ export async function getAuthUserId(): Promise<string | null> {
   return userId;
 }
 
-export async function getOrCreateUser(): Promise<IUser | null> {
+/** Deduped per request — layout + page won't each hit Clerk/MongoDB separately. */
+export const getOrCreateUser = cache(async (): Promise<IUser | null> => {
   const clerkUser = await currentUser();
   if (!clerkUser) return null;
 
@@ -27,7 +29,7 @@ export async function getOrCreateUser(): Promise<IUser | null> {
   }
 
   return user;
-}
+});
 
 export async function requireUser(): Promise<IUser> {
   const user = await getOrCreateUser();
