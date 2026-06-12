@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 import { connectDB } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
@@ -148,13 +149,26 @@ export async function POST(req: Request) {
     const message =
       error instanceof Error ? error.message : "Upload failed";
 
-    if (message.includes("ECONNREFUSED") || message.includes("MongoServerSelectionError")) {
+    if (
+      message.includes("ECONNREFUSED") ||
+      message.includes("MongoServerSelectionError")
+    ) {
       return NextResponse.json(
         {
           error:
             "Could not connect to the database. Check MongoDB Atlas IP whitelist and connection string.",
         },
         { status: 503 }
+      );
+    }
+
+    if (message.includes("ENOENT") || message.includes("no such file")) {
+      return NextResponse.json(
+        {
+          error:
+            "File processing failed on the server. Try a text-based PDF or DOCX, or re-deploy after the latest update.",
+        },
+        { status: 500 }
       );
     }
 
